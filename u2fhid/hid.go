@@ -56,7 +56,8 @@ func Devices() ([]*hid.DeviceInfo, error) {
 
 	res := make([]*hid.DeviceInfo, 0, len(devices))
 	for _, d := range devices {
-		if d.UsagePage == fidoUsagePage && d.Usage == u2fUsage {
+		// Some HID backends do not populate the usage/usagePage attributes. Include those devices and let callers decide which to use.
+		if (d.UsagePage == 0 && d.Usage == 0) || (d.UsagePage == fidoUsagePage && d.Usage == u2fUsage) {
 			res = append(res, d)
 		}
 	}
